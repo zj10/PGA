@@ -28,7 +28,8 @@ parser.add_argument('--model', dest='model_name', default='conv_mnist', choices=
 parser.add_argument('--epoch', dest='epoch', type=int, default=600)
 parser.add_argument('--batch_size', dest='batch_size', type=int, default=64)
 parser.add_argument('--lr', dest='lr', type=float, default=0.1, help='learning rate')
-parser.add_argument('--bn', dest='use_bn', type=bool, default=False, help='use batchnorm or not')
+parser.add_argument('--bn', dest='use_bn', type=lambda v: v.lower() in ('true', 'yes'), default=False,
+                    help='use batchnorm or not')
 parser.add_argument('--z_dim', dest='z_dim', type=int, default=12, help='dimension of latent space')
 parser.add_argument('--init_steps', dest='init_steps', type=int, default=3000, help='initialization steps')
 parser.add_argument('--zn_rec', dest='zn_rec_coeff', type=float, default=6e-2,

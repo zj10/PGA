@@ -28,7 +28,8 @@ parser.add_argument('--model', dest='model_name', default='conv_mnist', choices=
 parser.add_argument('--epoch', dest='epoch', type=int, default=600)
 parser.add_argument('--batch_size', dest='batch_size', type=int, default=64)
 parser.add_argument('--lr', dest='lr', type=float, default=0.1, help='learning rate')
-parser.add_argument('--bn', dest='use_bn', type=bool, default=False, help='use batchnorm or not')
+parser.add_argument('--bn', dest='use_bn', type=lambda v: v.lower() in ('true', 'yes'), default=False,
+                    help='use batchnorm or not')
 parser.add_argument('--z_dim', dest='z_dim', type=int, default=32, help='dimension of latent space')
 parser.add_argument('--zn_rec', dest='zn_rec_coeff', type=float, default=6e-2,
                     help='coefficient of latent reconstruction loss (z~N)')
@@ -107,7 +108,6 @@ normal_dist = tfd.MultivariateNormalDiag(scale_diag=np.ones([z_dim], dtype=np.fl
 # encode & decode
 z_mu, z_log_sigma_sq, img_rec = enc_dec(img)
 z_noise = tf.exp(0.5 * z_log_sigma_sq) * tf.random_normal(tf.shape(z_mu))
-z = z_mu + z_noise
 zn_targ, zh_targ = normal_dist.sample(batch_size), tf.stop_gradient(z_mu)
 zn_rec, zh_rec = dec_enc(zn_targ), dec_enc(zh_targ)
 z_mu_rec, z_rec = dec_enc(tf.stop_gradient(z_mu), no_enc_grad=True), \
