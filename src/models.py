@@ -6,6 +6,7 @@ from functools import partial
 
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
+import numpy as np
 import tflib as tl
 
 conv = partial(slim.conv2d, activation_fn=None)
@@ -28,7 +29,7 @@ def conv_mnist():
             y = fc(y, 1024, normalizer_fn=bn)
             z_mu = fc(y, z_dim)
             if sigma:
-                z_log_sigma_sq = fc(y, z_dim)
+                z_log_sigma_sq = fc(y, z_dim, biases_initializer=tf.constant_initializer(2. * np.log(0.1)))
                 return z_mu, z_log_sigma_sq
             else:
                 return z_mu
@@ -60,7 +61,7 @@ def conv_32():
             y = conv_bn_lrelu(y, dim * 4, 5, 2)
             z_mu = fc(y, z_dim)
             if sigma:
-                z_log_sigma_sq = fc(y, z_dim)
+                z_log_sigma_sq = fc(y, z_dim, biases_initializer=tf.constant_initializer(2. * np.log(0.1)))
                 return z_mu, z_log_sigma_sq
             else:
                 return z_mu
@@ -94,7 +95,7 @@ def conv_64():
             y = conv_bn_lrelu(y, dim * 8, 5, 2)
             z_mu = fc(y, z_dim)
             if sigma:
-                z_log_sigma_sq = fc(y, z_dim)
+                z_log_sigma_sq = fc(y, z_dim, biases_initializer=tf.constant_initializer(2. * np.log(0.1)))
                 return z_mu, z_log_sigma_sq
             else:
                 return z_mu
