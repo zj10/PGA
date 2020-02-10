@@ -26,7 +26,7 @@ def conv_mnist():
         with tf.variable_scope('Enc', reuse=tf.AUTO_REUSE):
             y = conv_lrelu(img, dim, 5, 2)
             y = conv_bn_lrelu(y, dim * 2, 5, 2)
-            y = fc(y, 1024, normalizer_fn=bn)
+            y = lrelu(fc(y, 1024, normalizer_fn=bn))
             z_mu = fc(y, z_dim)
             if sigma:
                 z_log_sigma_sq = fc(y, z_dim, biases_initializer=tf.constant_initializer(2. * np.log(0.1)))

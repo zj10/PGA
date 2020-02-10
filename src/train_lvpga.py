@@ -36,10 +36,10 @@ parser.add_argument('--zn_rec', dest='zn_rec_coeff', type=float, default=6e-2,
                     help='coefficient of latent reconstruction loss (z~N)')
 parser.add_argument('--zh_rec', dest='zh_rec_coeff', type=float, default=0,
                     help='coefficient of latent reconstruction loss (z~H)')
-parser.add_argument('--vrec', dest='vrec_coeff', type=float, default=1.5e-2,
+parser.add_argument('--vrec', dest='vrec_coeff', type=float, default=2e-2,
                     help='coefficient of VAE reconstruction loss')
 parser.add_argument('--vkld', dest='vkld_coeff', type=float, default=2e-2, help='coefficient of VAE KLD loss')
-parser.add_argument('--nll', dest='nll_coeff', type=float, default=1e-2, help='coefficient of NLL loss')
+parser.add_argument('--nll', dest='nll_coeff', type=float, default=0, help='coefficient of NLL loss')
 parser.add_argument('--experiment_name', dest='experiment_name',
                     default=datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"))
 
