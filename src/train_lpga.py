@@ -24,7 +24,7 @@ import fid
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', dest='dataset_name', default='mnist', choices=['mnist', 'cifar10', 'celeba'])
-parser.add_argument('--model', dest='model_name', default='conv_mnist', choices=['conv_mnist', 'conv_32', 'conv_64'])
+parser.add_argument('--model', dest='model_name', default='conv_mnist', choices=['conv_mnist', 'conv_32', 'resnet_32', 'conv_64'])
 parser.add_argument('--epoch', dest='epoch', type=int, default=600)
 parser.add_argument('--batch_size', dest='batch_size', type=int, default=64)
 parser.add_argument('--lr', dest='lr', type=float, default=0.1, help='learning rate')

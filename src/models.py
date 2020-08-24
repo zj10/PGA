@@ -82,6 +82,57 @@ def conv_32():
     return Enc, Dec
 
 
+def resnet_32():
+    def res_block(inputs, out_channels, scale=None, use_bn=False, is_training=True, enc_first=False):
+        assert scale in ['up', 'down', None]
+        bn = partial(batch_norm, is_training=is_training) if use_bn else None
+        conv1 = partial(conv, num_outputs=out_channels, kernel_size=1, stride=1)
+        conv3 = partial(conv, num_outputs=out_channels, kernel_size=3, stride=1)
+
+        skip, res = inputs, inputs
+        if not enc_first:
+            res = relu(bn(res)) if use_bn else relu(res)
+        if scale == 'up':
+            skip, res = tl.unpool(skip), tl.unpool(res)
+        if out_channels != inputs.shape[-1] or scale:
+            skip = conv1(skip)
+        res = conv3(conv3(res, normalizer_fn=bn, activation_fn=relu))
+        outputs = skip + res
+        if scale == 'down':
+            outputs = tl.pool(outputs)
+
+        return outputs
+
+    def Enc(img, z_dim, dim=512, use_bn=False, is_training=True, sigma=False):
+        rb = partial(res_block, use_bn=use_bn, is_training=is_training)
+
+        with tf.variable_scope('Enc', reuse=tf.AUTO_REUSE):
+            y = rb(img, dim, 'down', enc_first=True)
+            y = rb(y, dim, 'down')
+            y = rb(y, dim)
+            y = relu(rb(y, dim))
+            z_mu = fc(y, z_dim)
+            if sigma:
+                z_log_sigma_sq = fc(y, z_dim, biases_initializer=tf.constant_initializer(2. * np.log(0.1)))
+                return z_mu, z_log_sigma_sq
+            else:
+                return z_mu
+
+    def Dec(z, dim=512, channels=3, use_bn=False, is_training=True):
+        rb = partial(res_block, use_bn=use_bn, is_training=is_training)
+
+        with tf.variable_scope('Dec', reuse=tf.AUTO_REUSE):
+            y = fc(z, 4 * 4 * dim * 4)
+            y = tf.reshape(y, [-1, 4, 4, dim * 4])
+            y = rb(y, dim, 'up')
+            y = rb(y, dim, 'up')
+            y = rb(y, dim, 'up')
+            img = tf.tanh(conv(relu(y), channels, 3, 1))
+            return img
+
+    return Enc, Dec
+
+
 def conv_64():
     def Enc(img, z_dim, dim=64, use_bn=False, is_training=True, sigma=False):
         bn = partial(batch_norm, is_training=is_training) if use_bn else None
