@@ -1,5 +1,5 @@
 # PGA
-A TensorFlow implementation of [perceptual generative autoencoder (PGA)](https://openreview.net/forum?id=rkxkr8UKuN), based on [this implementation](https://github.com/LynnHo/VAE-Tensorflow) of VAE.
+A TensorFlow implementation of [perceptual generative autoencoder (PGA)](https://proceedings.icml.cc/paper/2020/hash/9ac403da7947a183884c18a67d3aa8de-Abstract.html), based on [this implementation](https://github.com/LynnHo/VAE-Tensorflow) of VAE.
 ## Usage
 #### LPGA
 ```sh
